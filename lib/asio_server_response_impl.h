@@ -1,3 +1,7 @@
+/// Modified for compatibility with Boost 1.87+
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -58,7 +62,7 @@ public:
   response *push(boost::system::error_code &ec, std::string method,
                  std::string raw_path_query, header_map) const;
 
-  boost::asio::io_service &io_service();
+  boost::asio::io_context &io_context();
 
   void start_response();
 

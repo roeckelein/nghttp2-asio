@@ -1,3 +1,7 @@
+/// Modified for compatibility with Boost 1.87+
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -67,7 +71,7 @@ class request;
 using response_cb = std::function<void(const response &)>;
 using request_cb = std::function<void(const request &)>;
 using connect_cb =
-    std::function<void(boost::asio::ip::tcp::resolver::iterator)>;
+    std::function<void(boost::asio::ip::tcp::resolver::results_type::iterator)>;
 
 class request_impl;
 
@@ -147,23 +151,23 @@ public:
   // Starts HTTP/2 session by connecting to |host| and |service|
   // (e.g., "80") using clear text TCP connection with connect timeout
   // 60 seconds.
-  session(boost::asio::io_service &io_service, const std::string &host,
+  session(boost::asio::io_context &io_context, const std::string &host,
           const std::string &service);
 
   // Same as previous but with pegged local endpoint
-  session(boost::asio::io_service &io_service,
+  session(boost::asio::io_context &io_context,
           const boost::asio::ip::tcp::endpoint &local_endpoint,
           const std::string &host, const std::string &service);
 
   // Starts HTTP/2 session by connecting to |host| and |service|
   // (e.g., "80") using clear text TCP connection with given connect
   // timeout.
-  session(boost::asio::io_service &io_service, const std::string &host,
+  session(boost::asio::io_context &io_context, const std::string &host,
           const std::string &service,
           const boost::posix_time::time_duration &connect_timeout);
 
   // Same as previous but with pegged local endpoint
-  session(boost::asio::io_service &io_service,
+  session(boost::asio::io_context &io_context,
           const boost::asio::ip::tcp::endpoint &local_endpoint,
           const std::string &host, const std::string &service,
           const boost::posix_time::time_duration &connect_timeout);
@@ -171,14 +175,14 @@ public:
   // Starts HTTP/2 session by connecting to |host| and |service|
   // (e.g., "443") using encrypted SSL/TLS connection with connect
   // timeout 60 seconds.
-  session(boost::asio::io_service &io_service,
+  session(boost::asio::io_context &io_context,
           boost::asio::ssl::context &tls_context, const std::string &host,
           const std::string &service);
 
   // Starts HTTP/2 session by connecting to |host| and |service|
   // (e.g., "443") using encrypted SSL/TLS connection with given
   // connect timeout.
-  session(boost::asio::io_service &io_service,
+  session(boost::asio::io_context &io_context,
           boost::asio::ssl::context &tls_context, const std::string &host,
           const std::string &service,
           const boost::posix_time::time_duration &connect_timeout);
@@ -201,8 +205,8 @@ public:
   // Shutdowns connection.
   void shutdown() const;
 
-  // Returns underlying io_service object.
-  boost::asio::io_service &io_service() const;
+  // Returns underlying io_context object.
+  boost::asio::io_context &io_context() const;
 
   // Submits request to server using |method| (e.g., "GET"), |uri|
   // (e.g., "http://localhost/") and optionally additional header

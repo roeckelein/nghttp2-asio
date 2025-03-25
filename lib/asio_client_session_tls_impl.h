@@ -1,3 +1,7 @@
+/// Modified for compatibility with Boost 1.87+
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -39,13 +43,13 @@ using ssl_socket = boost::asio::ssl::stream<tcp::socket>;
 
 class session_tls_impl : public session_impl {
 public:
-  session_tls_impl(boost::asio::io_service &io_service,
+  session_tls_impl(boost::asio::io_context &io_context,
                    boost::asio::ssl::context &tls_ctx, const std::string &host,
                    const std::string &service,
                    const boost::posix_time::time_duration &connect_timeout);
   virtual ~session_tls_impl();
 
-  virtual void start_connect(tcp::resolver::iterator endpoint_it);
+  virtual void start_connect(tcp::resolver::results_type::iterator endpoint_it);
   virtual tcp::socket &socket();
   virtual void read_socket(
       std::function<void(const boost::system::error_code &ec, std::size_t n)>

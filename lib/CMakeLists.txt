@@ -11,7 +11,7 @@ set(NGHTTP2_ASIO_SOURCES
   util.cc http2.cc
   timegm.c
   asio_common.cc
-  asio_io_service_pool.cc
+  asio_io_context_pool.cc
   asio_server_http2.cc
   asio_server_http2_impl.cc
   asio_server.cc

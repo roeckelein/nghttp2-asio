@@ -1,3 +1,8 @@
+# Modified for compatibility with Boost 1.87+
+#
+# Copyright (c) 2025 Ashley Roeckelein
+# (same license as Tatsuhiro Tsujikawa and Pter Wu)
+
 # nghttp2 - HTTP/2 C Library
 #
 # Copyright (c) 2012, 2013, 2014, 2015 Tatsuhiro Tsujikawa
@@ -24,7 +29,7 @@
 
 cmake_minimum_required(VERSION 3.0)
 # XXX using 1.8.90 instead of 1.9.0-DEV
-project(nghttp2-asio VERSION 0.0.90)
+project(nghttp2-asio VERSION 0.0.91)
 
 # See versioning rule:
 #  https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html

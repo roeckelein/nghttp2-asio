@@ -1,3 +1,7 @@
+/// Modified for compatibility with Boost 1.87+
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -64,8 +68,8 @@ void response::resume() const { impl_->resume(); }
 
 unsigned int response::status_code() const { return impl_->status_code(); }
 
-boost::asio::io_service &response::io_service() const {
-  return impl_->io_service();
+boost::asio::io_context &response::io_context() const {
+  return impl_->io_context();
 }
 
 response_impl &response::impl() const { return *impl_; }

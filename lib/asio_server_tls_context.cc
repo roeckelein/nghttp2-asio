@@ -1,3 +1,7 @@
+/// Modified for compatibility with OpenSSL3
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -77,11 +81,17 @@ configure_tls_context_easy(boost::system::error_code &ec,
   SSL_CTX_set_cipher_list(ctx, tls::DEFAULT_CIPHER_LIST);
 
 #ifndef OPENSSL_NO_EC
+# if 1 // [roeckelein] This does what we need in OpenSSL3(?):
+  constexpr const char DEFAULT_CURVES_LIST[] =
+      "P-256:P-384:P-521:X25519:X448";
+  SSL_CTX_set1_groups_list(ctx, DEFAULT_CURVES_LIST);
+# else
   auto ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
   if (ecdh) {
     SSL_CTX_set_tmp_ecdh(ctx, ecdh);
     EC_KEY_free(ecdh);
   }
+# endif // 1
 #endif /* OPENSSL_NO_EC */
 
 #ifndef OPENSSL_NO_NEXTPROTONEG

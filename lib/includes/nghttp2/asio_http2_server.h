@@ -1,3 +1,7 @@
+/// Modified for compatibility with Boost 1.87+
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -113,7 +117,7 @@ public:
   unsigned int status_code() const;
 
   // Returns boost::asio::io_service this response is running on.
-  boost::asio::io_service &io_service() const;
+  boost::asio::io_context &io_context() const;
 
   // Application must not call this directly.
   response_impl &impl() const;
@@ -211,8 +215,8 @@ public:
   void join();
 
   // Get access to the io_service objects.
-  const std::vector<std::shared_ptr<boost::asio::io_service>> &
-  io_services() const;
+  const std::vector<std::shared_ptr<boost::asio::io_context>> &
+  io_contexts() const;
 
   // Returns a vector with the ports in use
   std::vector<int> ports() const;

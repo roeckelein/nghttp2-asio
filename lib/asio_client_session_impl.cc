@@ -1,3 +1,7 @@
+/// Modified for compatibility with Boost 1.87+
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -39,15 +43,15 @@ namespace asio_http2 {
 namespace client {
 
 session_impl::session_impl(
-    boost::asio::io_service &io_service,
+    boost::asio::io_context &io_context,
     const boost::posix_time::time_duration &connect_timeout)
     : wblen_(0),
-      io_service_(io_service),
-      resolver_(io_service),
-      deadline_(io_service),
+      io_context_(io_context),
+      resolver_(io_context),
+      deadline_(io_context),
       connect_timeout_(connect_timeout),
       read_timeout_(boost::posix_time::seconds(60)),
-      ping_(io_service),
+      ping_(io_context),
       session_(nullptr),
       data_pending_(nullptr),
       data_pendinglen_(0),
@@ -72,15 +76,15 @@ void session_impl::start_resolve(const std::string &host,
 
   auto self = shared_from_this();
 
-  resolver_.async_resolve({host, service},
+  resolver_.async_resolve(host, service,
                           [self](const boost::system::error_code &ec,
-                                 tcp::resolver::iterator endpoint_it) {
+                                 tcp::resolver::results_type range) {
                             if (ec) {
                               self->not_connected(ec);
                               return;
                             }
 
-                            self->start_connect(endpoint_it);
+                            self->start_connect(range.begin());
                           });
 
   deadline_.async_wait(std::bind(&session_impl::handle_deadline, self));
@@ -124,7 +128,7 @@ void session_impl::handle_ping(const boost::system::error_code &ec) {
   start_ping();
 }
 
-void session_impl::connected(tcp::resolver::iterator endpoint_it) {
+void session_impl::connected(tcp::resolver::results_type::iterator endpoint_it) {
   if (!setup_session()) {
     return;
   }
@@ -585,7 +589,7 @@ void session_impl::shutdown() {
   signal_write();
 }
 
-boost::asio::io_service &session_impl::io_service() { return io_service_; }
+boost::asio::io_context &session_impl::io_context() { return io_context_; }
 
 void session_impl::signal_write() {
   if (!inside_callback_) {

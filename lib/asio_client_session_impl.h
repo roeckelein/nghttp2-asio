@@ -1,3 +1,7 @@
+/// Modified for compatibility with Boost 1.87+
+///
+/// Copyright (c) 2025 Ashley Roeckelein
+/// (same license as Tatsuhiro Tsujikawa)
 /*
  * nghttp2 - HTTP/2 C Library
  *
@@ -43,13 +47,13 @@ using boost::asio::ip::tcp;
 
 class session_impl : public std::enable_shared_from_this<session_impl> {
 public:
-  session_impl(boost::asio::io_service &io_service,
+  session_impl(boost::asio::io_context &io_context,
                const boost::posix_time::time_duration &connect_timeout);
   virtual ~session_impl();
 
   void start_resolve(const std::string &host, const std::string &service);
 
-  void connected(tcp::resolver::iterator endpoint_it);
+  void connected(tcp::resolver::results_type::iterator endpoint_it);
   void not_connected(const boost::system::error_code &ec);
 
   void on_connect(connect_cb cb);
@@ -72,7 +76,7 @@ public:
                         const std::string &method, const std::string &uri,
                         generator_cb cb, header_map h, priority_spec spec);
 
-  virtual void start_connect(tcp::resolver::iterator endpoint_it) = 0;
+  virtual void start_connect(tcp::resolver::results_type::iterator endpoint_it) = 0;
   virtual tcp::socket &socket() = 0;
   virtual void read_socket(
       std::function<void(const boost::system::error_code &ec, std::size_t n)>
@@ -84,7 +88,7 @@ public:
 
   void shutdown();
 
-  boost::asio::io_service &io_service();
+  boost::asio::io_context &io_context();
 
   void signal_write();
 
@@ -112,7 +116,7 @@ private:
   void start_ping();
   void handle_ping(const boost::system::error_code &ec);
 
-  boost::asio::io_service &io_service_;
+  boost::asio::io_context &io_context_;
   tcp::resolver resolver_;
 
   std::map<int32_t, std::unique_ptr<stream>> streams_;
