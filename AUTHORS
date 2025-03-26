@@ -1,3 +1,9 @@
+This lovely C++ wrapper library has been seemingly abandoned for 3 years!
+Boost has moved on to finally eliminate previously deprecated things, thus
+causing problems.  This "roeckelein" fork tries to revive this tasty library!
+
+--------
+
 nghttp2 project was started as a fork of spdylay project [1].  Both
 projects were started by Tatsuhiro Tsujikawa, who is still the main
 author of these projects.  Meanwhile, we have many contributions, and

@@ -3,8 +3,8 @@ libnghttp2_asio: High level HTTP/2 C++ library
 
 libnghttp2_asio is C++ library built on top of libnghttp2 and provides
 high level abstraction API to build HTTP/2 applications.  It depends
-on the Boost::ASIO library and OpenSSL.  libnghttp2_asio
-provides both client and server APIs.
+on the Boost::ASIO library and OpenSSL (now supporting Boost 1.87+ and
+OpenSSL3).  libnghttp2_asio provides both client and server APIs.
 
 The server API is designed to build an HTTP/2 server very easily to utilize
 modern C++ anonymous functions and closures.  The bare minimum example of
@@ -48,12 +48,12 @@ Here is sample code to use the client API:
 
     int main(int argc, char *argv[]) {
       boost::system::error_code ec;
-      boost::asio::io_service io_service;
+      boost::asio::io_context io_context;
 
       // connect to localhost:3000
-      session sess(io_service, "localhost", "3000");
+      session sess(io_context, "localhost", "3000");
 
-      sess.on_connect([&sess](tcp::resolver::iterator endpoint_it) {
+      sess.on_connect([&sess](tcp::resolver::results_type::iterator endpoint_it) {
         boost::system::error_code ec;
 
         auto req = sess.submit(ec, "GET", "http://localhost:3000/");
@@ -82,5 +82,5 @@ Here is sample code to use the client API:
         std::cerr << "error: " << ec.message() << std::endl;
       });
 
-      io_service.run();
+      io_context.run();
     }
